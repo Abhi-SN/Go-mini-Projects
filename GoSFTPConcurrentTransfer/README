@@ -1,0 +1,62 @@
+ Objective:- 
+ 
+        +---------------------------+
+        |        main.go            |
+        | Application Entry Point   |
+        +---------------------------+
+                    |
+                    v
+        +---------------------------+
+        | Get server details        |
+        | prompts.GetServerInputs() |
+        +---------------------------+
+                    |
+                    v
+        +---------------------------+
+        | Loop over server list     |
+        | Spawn goroutine per server|
+        +---------------------------+
+                    |
+                    v
+        +----------------------------+
+        | sftpclient.Connect()       |
+        | Establish SSH/SFTP session |
+        +----------------------------+
+                    |
+           +--------+--------+
+           |                 |
+           v                 v
++--------------------+   +---------------------+
+| If mode == upload  |   | If mode == download |
++--------------------+   +---------------------+
+           |                        |
+           v                        v
++-------------------------+   +-----------------------------+
+| sftpclient.UploadFile() |   | sftpclient.DownloadFile()   |
+| Upload local -> remote  |   | Download remote -> local    |
++-------------------------+   +-----------------------------+
+           \______________________________/
+                            |
+                            v
+               +------------------------------+
+               | Print success or failure     |
+               | WaitGroup done               |
+               +------------------------------+
+                            |
+                            v
+               +------------------------------+
+               | All transfers complete       |
+               +------------------------------+
+
+
+SFTP Package Used
+We use the pkg/sftp package along with Go's native golang.org/x/crypto/ssh.
+
+
+
+
+
+import (
+    "github.com/pkg/sftp"
+    "golang.org/x/crypto/ssh"
+)
