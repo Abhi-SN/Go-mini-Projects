@@ -1,0 +1,133 @@
+       +----------------------------+
+       |        main() starts       |
+       +----------------------------+
+                    |
+                    v
+      +----------------------------------------+
+      | fmt.Println("JWT - authentication...") |
+      +----------------------------------------+
+                    |
+                    v
+      +----------------------------------------+
+      | Setup http.HandleFunc for routes:      |
+      | "/", "/login", "/secure"               |
+      +----------------------------------------+
+                    |
+                    v
+      +----------------------------------------+
+      | Start server on port 4000              |
+      | http.ListenAndServe(":4000", nil)      |
+      +----------------------------------------+
+                    |
+                    v
+        +-----------------------------+
+        | User sends request to "/"   |
+        +-----------------------------+
+                    |
+                    v
+        +-----------------------------+
+        | HomeHandler() called        |
+        | Returns welcome message     |
+        +-----------------------------+
+
+                    |
+                    v
+        +-----------------------------+
+        | User sends POST to "/login" |
+        +-----------------------------+
+                    |
+                    v
+       +---------------------------------------------+
+       | LoginHandler() checks method == "POST"      |
+       +---------------------------------------------+
+                    |
+                    v
+       +---------------------------------------------+
+       | Decode JSON body into Credi struct           |
+       +---------------------------------------------+
+                    |
+                    v
+       +---------------------------------------------+
+       | Check username & password                   |
+       | (Hardcoded: "admin"/"admin")                |
+       +---------------------------------------------+
+        |                         |
+        | Valid                   | Invalid
+        v                         v
++---------------------+     +-----------------------------+
+| Call CreateJWT()    |     | Return 401 - Invalid creds  |
++---------------------+     +-----------------------------+
+        |
+        v
++------------------------------+
+| Fill MyCustomClaims struct   |
+| Set expiry, issuer, etc.     |
++------------------------------+
+        |
+        v
++------------------------------+
+| Generate JWT using HS256     |
+| Return token to client       |
++------------------------------+
+
+        |
+        v
++------------------------------+
+| User sends GET to "/secure" |
+| Adds JWT token in header    |
++------------------------------+
+        |
+        v
++------------------------------+
+| Auth Middleware runs         |
+| Checks for "Token" header    |
++------------------------------+
+        |
+        v
++------------------------------+
+| Call ValidateJWT(token)      |
++------------------------------+
+        |
+        v
++------------------------------+
+| Parse token with secret key  |
+| Check expiry, claims, etc.   |
++------------------------------+
+        |
+     Valid         Invalid
+      |               |
+      v               v
++------------------+  +-----------------------------+
+| Call SecureHandler |  | Return 401 - Unauthorized |
+| Return success msg |  +-----------------------------+
++------------------+
+
+
+What is jwt-golang?
+In Go, JWT (JSON Web Token) is commonly used for authentication and authorization in web applications. When people refer to jwt-golang, 
+
+
+A Go library used to generate, sign, and verify JSON Web Tokens.
+
+The most popular Go package for handling JWTs is:
+
+github.com/golang-jwt/jwt/v5
+
+
+
+jwt.RegisteredClaims
+An embedded struct that includes standard JWT claims as per RFC 7519.
+
+This gives you access to common JWT fields such as:
+
+Issuer (iss)
+
+Subject (sub)
+
+ExpiresAt (exp)
+
+IssuedAt (iat)
+
+NotBefore (nbf)
+
+ID (jti)
