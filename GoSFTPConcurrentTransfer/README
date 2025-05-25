@@ -48,15 +48,19 @@
                | All transfers complete       |
                +------------------------------+
 
+Project Structure
+sftp_app/
+├── main.go                       # Application entry point; orchestrates the workflow.
+├── go.mod                        # Go module definition.
+├── go.sum                        # Go module checksums.
+├── prompts/                      # Package for handling user input and server configuration.
+│   └── prompts.go                # Defines ServerDetails struct and GetServerInputs function.
+├── sftpclient/                   # Package for core SFTP connection and transfer logic.
+│   └── sftpclient.go             # Implements Connect, UploadFile, DownloadFile using pkg/sftp.
+└── serverhandler/                # Package for managing individual server processing.
+    └── serverhandler.go          # Contains the HandleServer function, run in goroutines.
 
-SFTP Package Used
-We use the pkg/sftp package along with Go's native golang.org/x/crypto/ssh.
+Packages used
+go mod init sftp_app # You can choose a different module name if you prefer
+go get github.com/pkg/sftp
 
-
-
-
-
-import (
-    "github.com/pkg/sftp"
-    "golang.org/x/crypto/ssh"
-)
